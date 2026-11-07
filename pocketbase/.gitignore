@@ -1,0 +1,5 @@
+pb_migrations/
+pocketbase_*/
+/*.zip
+pb_data
+/pocketbase
