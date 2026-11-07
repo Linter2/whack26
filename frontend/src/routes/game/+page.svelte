@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation"
     import { pb } from "../../lib/pb"
     import { getPlayers } from "../../lib/players"
     import { session } from "../../lib/stores.svelte"
@@ -7,6 +8,16 @@
 
     let players = $state<string[]>([])
     let unsubscribe: (() => void) | undefined
+    let redirected = false
+
+    // Once two players are in the lobby, send everyone to the game page.
+    // The game page reads the same lobby code and loads the players itself.
+    $effect(() => {
+        if (players.length >= 2 && !redirected) {
+            redirected = true
+            goto("/game/game")
+        }
+    })
 
     $effect(() => {
         const gameId = code
