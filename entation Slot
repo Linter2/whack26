@@ -1,0 +1,59 @@
+[33mcommit df504c95dc1e4bb8fff8ec12fa0482bf8b952fad[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mLobbyUI[m[33m, [m[1;31morigin/LobbyUI[m[33m, [m[1;32mmain[m[33m)[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sun Nov 8 00:41:37 2026 +0000
+
+    Changes
+
+[33mcommit f1f79edc3adfbfc8790b3c50396f71e20d58d963[m
+Author: Adam Clarke <adamdclarke8@gmail.com>
+Date:   Sat Nov 7 20:41:19 2026 +0000
+
+    Joining lobby now enters match
+
+[33mcommit 8a613178d45e1956b37e97c50d60b78c630ccba0[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sat Nov 7 18:58:16 2026 +0000
+
+    Basic multiplayer net
+
+[33mcommit 8297442de14e9e821c32035ed1deaece918eebd2[m
+Author: melv1nn0 <melvinpage99@gmail.com>
+Date:   Sat Nov 7 18:02:52 2026 +0000
+
+    Added querying to wikidata
+
+[33mcommit c0890715c0fbb0e88ee1bc831ea881aefd468fcb[m
+Author: melv1nn0 <melvinpage99@gmail.com>
+Date:   Sat Nov 7 15:28:53 2026 +0000
+
+    Request winner between two objects using HTTP
+
+[33mcommit fac69b94cf14fb28502a918aecd2cd8634b602fa[m
+Author: melv1nn0 <melvinpage99@gmail.com>
+Date:   Sat Nov 7 14:56:18 2026 +0000
+
+    Decides which object wins in a fight
+
+[33mcommit 646b87b867623c824dfab0fd50fef7df631eb519[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sat Nov 7 14:16:00 2026 +0000
+
+    Update architecture
+
+[33mcommit 67851143bebc57ce761ead974318294816f4275a[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sat Nov 7 13:38:25 2026 +0000
+
+    Add backend python
+
+[33mcommit 9fb7503e0ac9b191038d9b2602e7d5578de45600[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sat Nov 7 13:34:52 2026 +0000
+
+    Frontend + Pocketbase init
+
+[33mcommit 58bad7207aeae19154a6089e65249d1e8cea94f3[m
+Author: Linter2 <76398053+Linter2@users.noreply.github.com>
+Date:   Sat Nov 7 13:09:11 2026 +0000
+
+    Initial Commit

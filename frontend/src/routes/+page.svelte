@@ -1,8 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation"
-
     import { pb } from "../lib/pb"
-
     import { session } from "../lib/stores.svelte"
 
     async function enter() {
@@ -38,6 +36,8 @@
         } else {
             return
         }
+
+
 
         session.lobbyCode = String(lobbyId)
         await goto("/game")
