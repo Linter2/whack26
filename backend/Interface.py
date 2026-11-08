@@ -45,9 +45,10 @@ async def get_random_wikidata_items() -> list[dict]:
     # one of these, within `max_depth` levels. Q223557 = "physical object".
     listOfAllowedCategories = [
         "Q223557",
+        "Q729"
     ]
  
-    max_depth = 3          # 1-4 levels of "subclass of". Keep small: deep chains time out.
+    max_depth = 1          # 1-4 levels of "subclass of". Keep small: deep chains time out.
     min_sitelinks = 20     # popularity filter: item must have >= this many Wikimedia sitelinks
     pool_size = 500        # max candidates fetched from Wikidata
     cache_seconds = 3600   # how long the candidate pool is reused
