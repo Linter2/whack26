@@ -55,12 +55,71 @@
     })
 </script>
 
-<h1>Game {code}</h1>
+<div class="h-screen w-full flex items-center justify-center">
+    <div class="lobby-card">
+        <h1 class="lobby-title">Game Id: <span class="lobby-code">{code}</span></h1>
 
-<h2>Players</h2>
+        <h2 class="lobby-subtitle">Players</h2>
 
-<ul>
-    {#each players as player}
-        <li>{player}</li>
-    {/each}
-</ul>
+        <ul class="lobby-players">
+            {#each players as player}
+                <li>{player}</li>
+            {/each}
+        </ul>
+    </div>
+</div>
+
+<style>
+    /* The lobby is presented as a playing card, matching /game/game. */
+    .lobby-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 22rem;
+        padding: 1.5rem 1.75rem;
+        border-radius: 16px;
+        border: 5px solid transparent;
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        background-image:
+            linear-gradient(var(--game-white), var(--game-white)),
+            linear-gradient(to bottom, var(--game-zinc-500), var(--game-zinc-900));
+        box-shadow:
+            0 6px 14px color-mix(in srgb, var(--game-black) 30%, transparent),
+            0 2px 4px color-mix(in srgb, var(--game-black) 20%, transparent);
+        text-align: center;
+    }
+
+    .lobby-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--game-gray-900);
+    }
+
+    .lobby-code {
+        font-family: var(--font-code, monospace);
+    }
+
+    .lobby-subtitle {
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--game-zinc-500);
+    }
+
+    .lobby-players {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .lobby-players li {
+        font-family: inherit;
+        padding: 0.5rem 0.75rem;
+        border-radius: 10px;
+        background-color: var(--game-cream);
+        color: var(--game-gray-900);
+        font-weight: 600;
+    }
+</style>

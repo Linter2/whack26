@@ -1,1 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
+
+/*
+ * Colour palette extracted from the play screen (src/routes/game/game/+page.svelte).
+ * Defined on :root so every route can reuse them and the game stays rethemeable.
+ * Alpha shades are derived from a colour with color-mix, e.g.
+ *   color-mix(in srgb, var(--game-black) 30%, transparent) == rgba(0, 0, 0, 0.3).
+ */
+:root {
+	/* Play area */
+	--game-table: #505153; /* game screen background */
+	--game-white: #ffffff; /* light text, card fronts, ready-circle interior, clock hand */
+	--game-black: #000000; /* shadow base colour (used via color-mix with alpha) */
+
+	/* Card greys */
+	--game-zinc-900: #18181b; /* card border gradient, dark stop */
+	--game-zinc-500: #71717a; /* card border gradient, light stop */
+	--game-gray-900: #111827; /* card titles / dark text & dark card-back edge */
+	--game-gray-800: #1f2937; /* status progress track */
+	--game-gray-700: #374151; /* face-down card face & timer ring track */
+	--game-gray-600: #4b5563; /* face-down card pattern */
+	--game-gray-500: #6b7280; /* face-down card border gradient, light stop */
+	--game-gray-400: #9ca3af; /* shimmer gradient, mid stop */
+	--game-gray-300: #d1d5db; /* shimmer gradient, outer stops */
+
+	/* Ready button */
+	--game-green-600: #16a34a; /* ready text, check icon, wave border, gradient start */
+	--game-green-700: #15803d; /* gradient end, active-state text & icon */
+	--game-lime-500: #84cc16; /* gradient end (lime) */
+	--game-green-100: #dcfce7; /* ready circle interior */
+	--game-green-200: #bbf7d0; /* ready circle interior (active) */
+
+	/* Selection highlight (yellows & ambers) */
+	--game-yellow-50: #fef9c3; /* selected card face gradient, light stop */
+	--game-yellow-200: #fef08a; /* selected card face gradient, dark stop + glare glow */
+	--game-yellow-400: #facc15; /* wave pulse start */
+	--game-yellow-500: #eab308; /* ready text highlight (card selected) */
+	--game-yellow-600: #ca8a04; /* wave pulse end & selected card border gradient end */
+	--game-amber-600: #d97706; /* selected card border gradient, dark stop */
+	--game-amber-50: #fffbeb; /* ready circle interior (card selected) */
+
+	/* Timer */
+	--game-orange-500: #f97316; /* timer ring progress */
+
+	/* Typography */
+	--font-code: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+	/* One-off tints */
+	--game-cream: #fffdfa; /* ready circle interior (card selected), light stop */
+}
+
+/*
+ * Shared base styling: the dark table background and Quicksand font apply to
+ * every page routes under routes/, not just the play screen.
+ */
+body {
+	font-family: 'Quicksand', system-ui, sans-serif;
+	background-color: var(--game-table);
+	color: var(--game-white);
+}

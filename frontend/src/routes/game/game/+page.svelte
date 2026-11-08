@@ -1,10 +1,17 @@
-<script>
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { getPlayers } from '../../../lib/players';
   import { session } from '../../../lib/stores.svelte';
 
+  // An item card shown to the players (id comes from the backend / server).
+  interface Item {
+    id: string;
+    name: string;
+    image: string;
+  }
+
   // The two players in this lobby (loaded from the lobby code set on the join page)
-  let players = $state([]);
+  let players = $state<string[]>([]);
   let me = $derived(session.username);
   let opponent = $derived.by(() => {
     const others = [...players];
@@ -22,15 +29,15 @@
     }
   }
 
-  let items = $state([]);
+  let items = $state<Item[]>([]);
   let loading = $state(false);
-  let error = $state(null);
-  let selectedItem = $state(null);
+  let error = $state<string | null>(null);
+  let selectedItem = $state<Item | null>(null);
   let isReady = $state(false);
 
   const TOTAL_TIME = 30;
   let timeLeft = $state(TOTAL_TIME);
-  let timerInterval = null;
+  let timerInterval: ReturnType<typeof setInterval> | undefined = undefined;
 
   // Compute stroke-dashoffset for SVG timer ring (Radius = 40, Circumference ≈ 251.32)
   const TIMER_RADIUS = 40;
@@ -96,7 +103,7 @@
     }, 1000);
   }
 
-  function selectCard(item) {
+  function selectCard(item: Item) {
     // Prevent selecting or deselecting cards once the user is ready
     if (isReady) return;
 
@@ -194,7 +201,7 @@
             <g class="clock-hands" style="transform: rotate({handRotation}deg); transform-origin: 50px 50px; transition: transform 1s linear;">
               <line x1="50" y1="50" x2="50" y2="22" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
             </g>
-            <circle cx="50" cy="50" r="4" fill="#ffffff" />
+            <circle cx="50" cy="50" r="4" class="timer-dot" />
           </svg>
           <span class="timer-value">{timeLeft}s</span>
         </div>
@@ -226,16 +233,12 @@
 </div>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
-
   .game-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 2rem;
-    background-color: #505153;
-    font-family: 'Quicksand', system-ui, sans-serif;
     box-sizing: border-box;
   }
 
@@ -259,12 +262,12 @@
     background-origin: border-box;
     background-clip: padding-box, border-box;
     background-image: 
-      linear-gradient(#ffffff, #ffffff),
-      linear-gradient(to bottom, #18181b, #71717a);
+      linear-gradient(var(--game-white), var(--game-white)),
+      linear-gradient(to bottom, var(--game-zinc-900), var(--game-zinc-500));
 
     box-shadow: 
-      0 6px 14px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2);
+      0 6px 14px color-mix(in srgb, var(--game-black) 30%, transparent),
+      0 2px 4px color-mix(in srgb, var(--game-black) 20%, transparent);
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
   }
 
@@ -273,7 +276,7 @@
     margin-bottom: 0.75rem;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--game-white);
   }
 
   /* Opponent Hand (Top) */
@@ -283,8 +286,8 @@
 
   .card-back {
     background-image: 
-      linear-gradient(#374151, #374151),
-      linear-gradient(to bottom, #111827, #6b7280);
+      linear-gradient(var(--game-gray-700), var(--game-gray-700)),
+      linear-gradient(to bottom, var(--game-gray-900), var(--game-gray-500));
     background-clip: padding-box, border-box;
   }
 
@@ -292,13 +295,13 @@
     width: 100%;
     height: 100%;
     border-radius: 8px;
-    background-color: #4b5563;
+    background-color: var(--game-gray-600);
     background-image: repeating-linear-gradient(
       45deg,
-      #374151 0,
-      #374151 10px,
-      #4b5563 10px,
-      #4b5563 20px
+      var(--game-gray-700) 0,
+      var(--game-gray-700) 10px,
+      var(--game-gray-600) 10px,
+      var(--game-gray-600) 20px
     );
   }
 
@@ -326,11 +329,11 @@
     margin: 0;
     background: linear-gradient(
       90deg, 
-      #ffffff 0%, 
-      #d1d5db 25%, 
-      #9ca3af 50%, 
-      #d1d5db 75%, 
-      #ffffff 100%
+      var(--game-white) 0%, 
+      var(--game-gray-300) 25%, 
+      var(--game-gray-400) 50%, 
+      var(--game-gray-300) 75%, 
+      var(--game-white) 100%
     );
     background-size: 200% auto;
     color: transparent;
@@ -348,7 +351,7 @@
   .text-progress-track {
     width: 220px;
     height: 6px;
-    background-color: #1f2937;
+    background-color: var(--game-gray-800);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -356,7 +359,7 @@
   /* Solid White Fill Bar with Dynamic Fade */
   .text-progress-fill {
     height: 100%;
-    background-color: #ffffff;
+    background-color: var(--game-white);
     border-radius: 4px;
     transition: width 1s linear, opacity 1s linear;
   }
@@ -378,7 +381,7 @@
   .ready-text {
     font-weight: 700;
     font-size: 1.2rem;
-    color: #16a34a;
+    color: var(--game-green-600);
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
   }
@@ -389,26 +392,26 @@
     border-radius: 50%;
     border: 4px solid transparent;
     background: 
-      linear-gradient(#ffffff, #ffffff) padding-box,
-      linear-gradient(135deg, #15803d 0%, #84cc16 100%) border-box;
+      linear-gradient(var(--game-white), var(--game-white)) padding-box,
+      linear-gradient(135deg, var(--game-green-700) 0%, var(--game-lime-500) 100%) border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--game-black) 15%, transparent);
     transition: transform 0.2s, box-shadow 0.3s;
   }
 
   .check-icon {
     width: 44px;
     height: 44px;
-    fill: #16a34a;
+    fill: var(--game-green-600);
     transition: fill 0.3s ease;
   }
 
   .ready-btn.active .check-circle {
     background: 
-      linear-gradient(#dcfce7, #dcfce7) padding-box,
-      linear-gradient(135deg, #15803d 0%, #84cc16 100%) border-box;
+      linear-gradient(var(--game-green-100), var(--game-green-100)) padding-box,
+      linear-gradient(135deg, var(--game-green-700) 0%, var(--game-lime-500) 100%) border-box;
   }
 
   /* Ready Button Selection State */
@@ -417,18 +420,18 @@
   }
 
   .ready-btn.has-selection .ready-text {
-    color: #eab308;
-    text-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+    color: var(--game-yellow-500);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--game-yellow-500) 40%, transparent);
   }
 
   .ready-btn.has-selection .check-circle {
     background: 
-      linear-gradient(to bottom, #fffdfa 0%, #fffbeb 100%) padding-box,
-      linear-gradient(135deg, #15803d 0%, #84cc16 100%) border-box;
+      linear-gradient(to bottom, var(--game-cream) 0%, var(--game-amber-50) 100%) padding-box,
+      linear-gradient(135deg, var(--game-green-700) 0%, var(--game-lime-500) 100%) border-box;
   }
 
   .ready-btn.has-selection .check-icon {
-    fill: #16a34a;
+    fill: var(--game-green-600);
   }
 
   /* Button Inflation on Card Selection (Base 1.12x scaled + 10% inflation = ~1.23x total scale) */
@@ -443,19 +446,19 @@
   }
 
   .ready-btn.has-selection.active .ready-text {
-    color: #15803d;
+    color: var(--game-green-700);
     text-shadow: none;
   }
 
   .ready-btn.has-selection.active .check-circle {
     background: 
-      linear-gradient(#dcfce7, #bbf7d0) padding-box,
-      linear-gradient(135deg, #16a34a 0%, #15803d 100%) border-box;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      linear-gradient(var(--game-green-100), var(--game-green-200)) padding-box,
+      linear-gradient(135deg, var(--game-green-600) 0%, var(--game-green-700) 100%) border-box;
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--game-black) 15%, transparent);
   }
 
   .ready-btn.has-selection.active .check-icon {
-    fill: #15803d;
+    fill: var(--game-green-700);
   }
 
   /* Base Wave Ring (Invisible by default to prevent static pop-in) */
@@ -466,7 +469,7 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    border: 3px solid #16a34a;
+    border: 3px solid var(--game-green-600);
     pointer-events: none;
     transform: translate(-50%, -50%);
     opacity: 0; /* Keeps delayed waves hidden until animation starts */
@@ -486,15 +489,15 @@
       width: 70px;
       height: 70px;
       opacity: 0.8;
-      border-color: #facc15;
-      box-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+      border-color: var(--game-yellow-400);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--game-yellow-400) 60%, transparent);
     }
     100% {
       width: 160px;
       height: 160px;
       opacity: 0;
-      border-color: #ca8a04;
-      box-shadow: 0 0 30px rgba(202, 138, 4, 0);
+      border-color: var(--game-yellow-600);
+      box-shadow: 0 0 30px color-mix(in srgb, var(--game-yellow-600) 0%, transparent);
     }
   }
 
@@ -532,21 +535,25 @@
 
   .ring-bg {
     fill: none;
-    stroke: #374151;
+    stroke: var(--game-gray-700);
     stroke-width: 8;
   }
 
   .ring-progress {
     fill: none;
-    stroke: #f97316;
+    stroke: var(--game-orange-500);
     stroke-width: 8;
     stroke-linecap: round;
     transition: stroke-dashoffset 1s linear;
   }
 
   .clock-hands {
-    color: #ffffff;
+    color: var(--game-white);
     opacity: 0.9;
+  }
+
+  .timer-dot {
+    fill: var(--game-white);
   }
 
   .timer-value {
@@ -554,7 +561,7 @@
     bottom: -1.4rem;
     font-weight: 700;
     font-size: 1rem;
-    color: #ffffff;
+    color: var(--game-white);
   }
 
   /* Player Hand (Bottom) */
@@ -575,18 +582,18 @@
   .card-front:hover {
     transform: translateY(-6px);
     box-shadow: 
-      0 10px 20px rgba(0, 0, 0, 0.4),
-      0 4px 6px rgba(0, 0, 0, 0.25);
+      0 10px 20px color-mix(in srgb, var(--game-black) 40%, transparent),
+      0 4px 6px color-mix(in srgb, var(--game-black) 25%, transparent);
   }
 
   .card-front.selected {
     transform: translateY(-6px);
     background-image: 
-      linear-gradient(#fef9c3, #fef08a),
-      linear-gradient(to bottom, #d97706, #ca8a04);
+      linear-gradient(var(--game-yellow-50), var(--game-yellow-200)),
+      linear-gradient(to bottom, var(--game-amber-600), var(--game-yellow-600));
     box-shadow: 
-      0 8px 18px rgba(202, 138, 4, 0.3),
-      0 0 10px rgba(254, 240, 138, 0.5);
+      0 8px 18px color-mix(in srgb, var(--game-yellow-600) 30%, transparent),
+      0 0 10px color-mix(in srgb, var(--game-yellow-200) 50%, transparent);
   }
 
   .card-front img {
@@ -599,7 +606,7 @@
   .card-title {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--game-gray-900);
     text-align: center;
     line-height: 1.15;
   }
@@ -610,7 +617,7 @@
     bottom: 2rem;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--game-white);
     }
 
   /* Gray out unselected cards when timer ends */
@@ -626,8 +633,8 @@
   .card-front.floated-card {
     transform: translateY(-120px) scale(1.15);
     box-shadow: 
-      0 16px 32px rgba(0, 0, 0, 0.45),
-      0 0 20px rgba(254, 240, 138, 0.7);
+      0 16px 32px color-mix(in srgb, var(--game-black) 45%, transparent),
+      0 0 20px color-mix(in srgb, var(--game-yellow-200) 70%, transparent);
     transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease;
     z-index: 10;
   }
